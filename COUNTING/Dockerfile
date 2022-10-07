@@ -12,7 +12,7 @@ RUN apt-get update --fix-missing \
 && tar -xf subread-2.0.3-Linux-x86_64.tar.gz \
 
 #Deplacer le fichier decompression dans bin
-&& sudo mv subread-2.0.3-Linux-x86_64 /usr/local/bin/ \
+&& mv subread-2.0.3-Linux-x86_64 /usr/local/bin/ \
 
 #rendre le fichier executable
 && chmod +x /usr/local/bin/subread-2.0.3-Linux-x86_64 \
