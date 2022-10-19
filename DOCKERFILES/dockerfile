@@ -1,0 +1,7 @@
+#install ubuntu
+FROM ubuntu:22.04
+
+#install packages and specify versions for reproducibility
+RUN apt-get update
+RUN apt-get install fastqc=v0.11.9+dfsg-1 -y
+
