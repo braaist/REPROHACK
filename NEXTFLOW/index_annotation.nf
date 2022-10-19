@@ -8,7 +8,6 @@ process CreatingIndex {
 	output:
 
         """
-        nb_cpu = echo nproc
         STAR --runThreadN 8 --runMode genomeGenerate --genomeDir ${PWD}/ --genomeFastaFiles ref.fa
         """
 }
