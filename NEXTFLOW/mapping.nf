@@ -6,7 +6,7 @@ process Mapping {
     container 'delaugustin/rna-star'
       
 
-	input:
+    input:
         
 
     output:
