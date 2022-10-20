@@ -48,11 +48,34 @@ process DownloadFasta {
         """
 }
 
+// Process for creating genome index
+process CreatingIndex {
+
+        container 'delaugustin/rna-star'
+
+        input:
+
+	output:
+
+        """
+        STAR --runThreadN 8 --runMode genomeGenerate --genomeDir ${PWD}/ --genomeFastaFiles ref.fa
+        """
+}
+
 workflow {
 	//run DownloadGFF
         DownloadGFF()
-	//run DownloadRef for 22 chromosomes
-        DownloadRef(Channel.from(1..22))
-	// run DownloadFasta for SRA
-        fasta_files = DownloadFasta(Channel.fromSRA("SRA062359"))
+
+	// Pipeline indexation and mapping
+        DownloadRef(Channel.from(1..2),params.in)\
+                | CreatingIndex(params.in) \
+                | //Mapping(params.in) \
+                | //Counting
+
+	// Pipe line DownloadFasta
+        fasta_files = DownloadFasta(Channel.fromSRA("SRA062359"),params.in) \
+                | //Mapping(params.in)
+                | //Counting
+
+        // Pipeline for analysis
 }
