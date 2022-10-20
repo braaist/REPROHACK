@@ -3,7 +3,6 @@
 
 process Mapping {
    
-
     container 'delaugustin/rna-star'
       
 
@@ -11,8 +10,7 @@ process Mapping {
         
 
     output:
-        
-    
+           
    
     """
     gunzip *.gz
@@ -26,38 +24,7 @@ process Mapping {
     
 }
 
-
 workflow{
     // run Mapping 	
     Mapping() 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
