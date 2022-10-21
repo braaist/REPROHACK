@@ -8,6 +8,7 @@ process DownloadGFF {
 	input:
 	
 	output:
+        val true
 	
 	script:
 	"""
@@ -38,6 +39,7 @@ process DownloadFasta {
         executor = "local"
 
         output:
+        val true
 
 	input:
         tuple val(name), val(path)
@@ -58,18 +60,53 @@ process CreatingIndex {
         val ready
 
 	output:
+        val true
 
         """
-        STAR --runThreadN 4 --runMode genomeGenerate --genomeDir ${PWD}/ --genomeFastaFiles ref.fa
+        STAR --runThreadN 4 --runMode genomeGenerate --genomeDir ${PWD}/ --genomeFastaFiles ${PWD}/ref.fa
         """
 }
 
+//Create the mapping for the RNA-seq data
+process Mapping {
+   
+    container 'delaugustin/rna-star'
+      
+    input:
+    val ready
+        
+    output:
+    //val true
+           
+    """
+    gunzip *.gz
+    
+    STAR  --runThreadN 14 \
+    	  --outFilterMultimapNmax 10 \
+    	  --genomeDir ${PWD} \
+    	  --readFilesIn "*.fastq"  \
+    	  --outSAMtype BAM SortedByCoordinate
+    """
+    
+}
+
 workflow {
-	//run DownloadGFF
+	
+        // ===========Pipeline for getting gene anotation===================
+        //run DownloadGFF
         DownloadGFF()
 
-	// Pipeline indexation and mapping
-        DownloadRef(Channel.from(1))
+        // ===========Pipeline for downloading the patient's genes=================
+        fasta_files = DownloadFasta(Channel.fromSRA("SRA062359"))
+
+        // ============Pipeline indexation and mapping===========================
+
+        // Run DownloadRef with the channel
+        DownloadRef(Channel.from(1)) //1 chromosome for the moment
+
+        // Run CreatingIndex process with DownloadRef's output as input
         CreatingIndex(DownloadRef.out)
 
+        // Run Mapping process with CreatingIndex's output and  as input
+        Mapping(CreatingIndex.out,DownloadFasta.out,DownloadGFF.out)
 }
