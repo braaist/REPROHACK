@@ -23,6 +23,7 @@ process DownloadRef {
         tuple val(name)
 
 	output:
+        val true
 
 	script:
         """
@@ -54,11 +55,12 @@ process CreatingIndex {
         container 'delaugustin/rna-star'
 
         input:
+        val ready
 
 	output:
 
         """
-        STAR --runThreadN 8 --runMode genomeGenerate --genomeDir ${PWD}/ --genomeFastaFiles ref.fa
+        STAR --runThreadN 4 --runMode genomeGenerate --genomeDir ${PWD}/ --genomeFastaFiles ref.fa
         """
 }
 
@@ -67,15 +69,7 @@ workflow {
         DownloadGFF()
 
 	// Pipeline indexation and mapping
-        DownloadRef(Channel.from(1..2),params.in)\
-                | CreatingIndex(params.in) \
-                | //Mapping(params.in) \
-                | //Counting
+        DownloadRef(Channel.from(1))
+        CreatingIndex(DownloadRef.out)
 
-	// Pipe line DownloadFasta
-        fasta_files = DownloadFasta(Channel.fromSRA("SRA062359"),params.in) \
-                | //Mapping(params.in)
-                | //Counting
-
-        // Pipeline for analysis
 }
