@@ -1,7 +1,7 @@
 //specify site for Fasta download as separated prefix
 download_prefix="ftp://ftp.sra.ebi.ac.uk/"
 
-//process for downloading reference chromosomes
+//process for getting gene anotations
 process DownloadGFF {
 	executor = "local"
 	
@@ -16,6 +16,7 @@ process DownloadGFF {
 	"""
 }
 
+//process for downloading reference chromosomes
 process DownloadRef {
 
         executor = "local"
@@ -34,7 +35,8 @@ process DownloadRef {
         """
 }
 
-process DownloadFasta {
+// Process for downloading the patient's genomes
+process DownloadFastq {
 
         executor = "local"
 
@@ -95,18 +97,19 @@ workflow {
         // ===========Pipeline for getting gene anotation===================
         //run DownloadGFF
         DownloadGFF()
+	
 
         // ===========Pipeline for downloading the patient's genes=================
-        fasta_files = DownloadFasta(Channel.fromSRA("SRA062359"))
+        fastq_files = DownloadFastq(Channel.fromSRA("SRA062359"))
+	
 
         // ============Pipeline indexation and mapping===========================
-
         // Run DownloadRef with the channel
         DownloadRef(Channel.from(1)) //1 chromosome for the moment
 
         // Run CreatingIndex process with DownloadRef's output as input
         CreatingIndex(DownloadRef.out)
 
-        // Run Mapping process with CreatingIndex's output and  as input
-        Mapping(CreatingIndex.out,DownloadFasta.out,DownloadGFF.out)
+        // Run Mapping process with CreatingIndex's output, DownloadFastq's output and DownloadGFF's output as input
+        Mapping(CreatingIndex.out,DownloadFastq.out,DownloadGFF.out)
 }
