@@ -7,8 +7,9 @@ process Mapping {
       
 
     input:
-        
-
+    fastq_files    
+    index_path
+    
     output:
            
     """
