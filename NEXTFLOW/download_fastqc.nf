@@ -4,10 +4,12 @@ download_prefix="ftp://ftp.sra.ebi.ac.uk/"
 //process for downloading reference chromosomes
 process DownloadGFF {
 	executor = "local"
+	publishDir '/home/ubuntu/nextflow/'
 	
 	input:
 	
 	output:
+	file "*.gtf.gz"
 	
 	script:
 	"""
@@ -18,12 +20,13 @@ process DownloadGFF {
 process DownloadRef {
 
         executor = "local"
-
+        publishDir '/home/ubuntu/nextflow/'
         input:
         tuple val(name)
 
 	output:
-
+	file "ref.fa"
+	
 	script:
         """
 	wget -O chromosome_${name}.fa.gz ftp://ftp.ensembl.org/pub/release-101/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.${name}.fa.gz
@@ -35,9 +38,9 @@ process DownloadRef {
 process DownloadFasta {
 
         executor = "local"
-
+        publishDir '/home/ubuntu/nextflow/'
         output:
-
+	file "*fastq.gz"
 	input:
         tuple val(name), val(path)
 
@@ -48,6 +51,27 @@ process DownloadFasta {
         """
 }
 
+process FastQC {
+
+	container "fastqc"
+        publishDir '/home/ubuntu/nextflow/'
+
+        input:
+	val fastq_file
+
+        output:
+        val true
+        
+	script:
+        """
+	echo "{fastq_file[0].simpleName}.zip"
+        fastqc ${fastq_file[0]}
+	fastqc ${fastq_file[1]}
+        """
+
+}
+
+
 workflow {
 	//run DownloadGFF
         DownloadGFF()
@@ -55,4 +79,5 @@ workflow {
         DownloadRef(Channel.from(1..22))
 	// run DownloadFasta for SRA
         fasta_files = DownloadFasta(Channel.fromSRA("SRA062359"))
+	FastQC(fasta_files)
 }
