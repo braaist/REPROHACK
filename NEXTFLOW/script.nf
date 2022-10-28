@@ -162,4 +162,3 @@ workflow {
         // ============== Pipeline for Counting======================
         Counting(Mapping.out)
 }
-
