@@ -63,9 +63,10 @@ process CreatingIndex {
 
 	output:
         val true
-
+	
+	script:
         """
-        STAR --runThreadN 4 --runMode genomeGenerate --genomeDir ${PWD}/ --genomeFastaFiles ${PWD}/ref.fa
+        STAR --runThreadN 8 --runMode genomeGenerate --genomeDir ${PWD}/ --genomeFastaFiles ${PWD}/ref.fa
         """
 }
 
@@ -81,7 +82,8 @@ process Mapping {
         
     output:
     val true
-           
+    
+    script:    
     """
     gunzip *.gz
     
