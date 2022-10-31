@@ -6,7 +6,7 @@ process DownloadGFF {
 	executor = "local"
 	
 	//specify directory
-	publishDir "work_dir", mode: 'copy', overwrite: false
+	publishDir '/work_dir/', mode: 'copy'
 	
 	input:
 	
@@ -25,7 +25,7 @@ process DownloadRef {
         executor = "local"
 	
 	//specify directory
-	publishDir "work_dir", mode: 'copy', overwrite: false
+	publishDir '/work_dir/', mode: 'copy'
 
         input:
         tuple val(name)
@@ -47,7 +47,7 @@ process DownloadFastq {
         executor = "local"
 	
 	//specify directory
-	publishDir "work_dir", mode: 'copy', overwrite: false
+	publishDir '/work_dir/', mode: 'copy'
 
         output:
         val true
@@ -68,7 +68,7 @@ process CreatingIndex {
         container 'delaugustin/rna-star'
 	
 	//specify directory
-	publishDir "work_dir", mode: 'copy', overwrite: false
+	publishDir '/work_dir/', mode: 'copy'
 
         input:
         val ready
