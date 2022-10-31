@@ -5,12 +5,10 @@ download_prefix="ftp://ftp.sra.ebi.ac.uk/"
 process DownloadGFF {
 	executor = "local"
 	
-	//specify directory
-	publishDir '/work_dir/', mode: 'copy'
-	
 	input:
 	
 	output:
+	publishDir "${params.outdir}/work_dir"
         val true
 	
 	script:
@@ -23,14 +21,12 @@ process DownloadGFF {
 process DownloadRef {
 
         executor = "local"
-	
-	//specify directory
-	publishDir '/work_dir/', mode: 'copy'
 
         input:
         tuple val(name)
 
 	output:
+	publishDir "${params.outdir}/work_dir"
         val true
 
 	script:
@@ -45,11 +41,9 @@ process DownloadRef {
 process DownloadFastq {
 
         executor = "local"
-	
-	//specify directory
-	publishDir '/work_dir/', mode: 'copy'
 
         output:
+	publishDir "${params.outdir}/work_dir"
         val true
 
 	input:
@@ -66,14 +60,12 @@ process DownloadFastq {
 process CreatingIndex {
 
         container 'delaugustin/rna-star'
-	
-	//specify directory
-	publishDir '/work_dir/', mode: 'copy'
 
         input:
         val ready
 
 	output:
+	publishDir "${params.outdir}/work_dir"
         val true
 	
 	script:
