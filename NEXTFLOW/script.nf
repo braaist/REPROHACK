@@ -1,12 +1,14 @@
 //specify site for Fasta download as separated prefix
 download_prefix="ftp://ftp.sra.ebi.ac.uk/"
 
+params.publish_dir = "work_dir"
+
 //process for getting gene anotations
 process DownloadGFF {
 	executor = "local"
 	
 	//specify directory
-	publishDir "/work_dir"
+	publishDir "${params.publish_dir}"
 	
 	input:
 	
@@ -26,7 +28,7 @@ process DownloadRef {
         executor = "local"
 	
 	//specify directory
-	publishDir "/work_dir"
+	publishDir "${params.publish_dir}"
 
         input:
         tuple val(name)
@@ -49,7 +51,7 @@ process DownloadFastq {
         executor = "local"
 	
 	//specify directory
-	publishDir "/work_dir"
+	publishDir "${params.publish_dir}"
 
         output:
 	path
@@ -71,7 +73,7 @@ process CreatingIndex {
         container 'delaugustin/rna-star'
 	
 	//specify directory
-	publishDir "/work_dir"
+	publishDir "${params.publish_dir}"
 
         input:
         val ready
