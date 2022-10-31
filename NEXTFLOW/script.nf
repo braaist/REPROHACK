@@ -11,6 +11,7 @@ process DownloadGFF {
 	input:
 	
 	output:
+	path
         val true
 	
 	script:
@@ -31,6 +32,7 @@ process DownloadRef {
         tuple val(name)
 
 	output:
+	path
         val true
 
 	script:
@@ -50,6 +52,7 @@ process DownloadFastq {
 	publishDir "/work_dir"
 
         output:
+	path
         val true
 
 	input:
@@ -74,6 +77,7 @@ process CreatingIndex {
         val ready
 
 	output:
+	path
         val true
 	
 	script:
