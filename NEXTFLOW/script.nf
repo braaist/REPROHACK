@@ -66,7 +66,7 @@ process CreatingIndex {
 	
 	script:
         """
-        STAR --runThreadN 8 --runMode genomeGenerate --genomeDir ${PWD}/ --genomeFastaFiles ${PWD}/ref.fa
+        STAR --runThreadN 8 --runMode genomeGenerate --genomeDir ${PWD}/ --genomeFastaFiles ref.fa
         """
 }
 
