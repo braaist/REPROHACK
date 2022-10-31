@@ -126,7 +126,7 @@ workflow {
         // ============Pipeline indexation and mapping===========================
 
         // Run DownloadRef with the channel
-        DownloadRef(Channel.from(1)) //1 chromosome for the moment
+        DownloadRef(Channel.from(1..22))
 
         // Run CreatingIndex process with DownloadRef's output as input
         CreatingIndex(DownloadRef.out)
