@@ -5,6 +5,8 @@ download_prefix="ftp://ftp.sra.ebi.ac.uk/"
 process DownloadGFF {
 	executor = "local"
 	
+	publishDir "work_dir"
+	
 	input:
 	
 	output:
@@ -20,6 +22,8 @@ process DownloadGFF {
 process DownloadRef {
 
         executor = "local"
+	
+	publishDir "work_dir"
 
         input:
         tuple val(name)
@@ -39,6 +43,8 @@ process DownloadRef {
 process DownloadFastq {
 
         executor = "local"
+	
+	publishDir "work_dir"
 
         output:
         val true
@@ -57,6 +63,8 @@ process DownloadFastq {
 process CreatingIndex {
 
         container 'delaugustin/rna-star'
+	
+	publishDir "work_dir"
 
         input:
         val ready
@@ -66,7 +74,7 @@ process CreatingIndex {
 	
 	script:
         """
-        STAR --runThreadN 16 --runMode genomeGenerate --genomeDir ${PWD}/ --genomeFastaFiles ${PWD}/ref.fa
+        STAR --runThreadN 16 --runMode genomeGenerate --genomeDir ./work_dir/ --genomeFastaFiles ./work_dir/ref.fa
         """
 }
 
