@@ -1,14 +1,19 @@
 //specify site for Fasta download as separated prefix
 download_prefix="ftp://ftp.sra.ebi.ac.uk/"
 
+// Creat a specefic directory to stor the outputs
+params.outdir = 'results'
+
 //process for getting gene anotations
 process DownloadGFF {
+
+	publishDir "$params.outdir"
+
 	executor = "local"
 	
 	input:
 	
 	output:
-	publishDir "${params.outdir}/work_dir"
         val true
 	
 	script:
@@ -20,13 +25,14 @@ process DownloadGFF {
 //process for downloading reference chromosomes
 process DownloadRef {
 
+	publishDir "$params.outdir"
+
         executor = "local"
 
         input:
         tuple val(name)
 
 	output:
-	publishDir "${params.outdir}/work_dir"
         val true
 
 	script:
@@ -40,10 +46,11 @@ process DownloadRef {
 // Process for downloading the patient's genomes
 process DownloadFastq {
 
+	publishDir "$params.outdir"
+
         executor = "local"
 
         output:
-	publishDir "${params.outdir}/work_dir"
         val true
 
 	input:
@@ -59,13 +66,14 @@ process DownloadFastq {
 // Process for creating genome index
 process CreatingIndex {
 
+	publishDir "$params.outdir"
+
         container 'delaugustin/rna-star'
 
         input:
         val ready
 
 	output:
-	publishDir "${params.outdir}/work_dir"
         val true
 	
 	script:
