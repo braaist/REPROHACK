@@ -1,8 +1,6 @@
 //specify site for Fasta download as separated prefix
 download_prefix="ftp://ftp.sra.ebi.ac.uk/"
 
-docker.enabled = true
-
 //process for getting gene anotations
 process DownloadGFF {
 
