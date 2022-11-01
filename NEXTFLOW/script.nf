@@ -1,13 +1,10 @@
 //specify site for Fasta download as separated prefix
 download_prefix="ftp://ftp.sra.ebi.ac.uk/"
 
-// Creat a specefic directory to stor the outputs
-params.outdir = 'results'
+docker.enabled = true
 
 //process for getting gene anotations
 process DownloadGFF {
-
-	publishDir "$params.outdir"
 
 	executor = "local"
 	
@@ -24,8 +21,6 @@ process DownloadGFF {
 
 //process for downloading reference chromosomes
 process DownloadRef {
-
-	publishDir "$params.outdir"
 
         executor = "local"
 
@@ -46,8 +41,6 @@ process DownloadRef {
 // Process for downloading the patient's genomes
 process DownloadFastq {
 
-	publishDir "$params.outdir"
-
         executor = "local"
 
         output:
@@ -66,9 +59,7 @@ process DownloadFastq {
 // Process for creating genome index
 process CreatingIndex {
 
-	publishDir "$params.outdir"
-
-        container 'delaugustin/rna-star'
+        container 'delaugustin/rna-star:2.7.10a'
 
         input:
         val ready
