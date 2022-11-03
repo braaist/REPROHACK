@@ -1,5 +1,7 @@
 //specify site for Fasta download as separated prefix
 download_prefix = "ftp://ftp.sra.ebi.ac.uk/"
+ref_path = "/genome/"
+
 
 //process for getting gene anotations
 process DownloadGFF {
@@ -28,13 +30,12 @@ process DownloadRef {
         tuple val(name)
 
         output:
-        path "ref.fa"
+        path "chromosome_*.fa"
 
         script:
         """
         wget -O chromosome_${name}.fa.gz ftp://ftp.ensembl.org/pub/release-101/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.${name}.fa.gz
-        gunzip -c chromosome_${name}.fa.gz > ref.fa
-        rm chromosome_${name}.fa.gz
+        gunzip chromosome_${name}.fa.gz
         """
 }
 
@@ -48,21 +49,40 @@ process DownloadFastq {
         path "*.fastq"
 
         input:
-        tuple val(name), val(path)
+        tuple val(name), val(pathway)
 
         script:
         """
-        wget -O ${path[0].Name} ${download_prefix}${path[0]}
-        wget -O ${path[1].Name} ${download_prefix}${path[1]}
-	gunzip ${path[0].Name}
-	gunzip ${path[1].Name}
+        wget -O ${pathway[0].Name} ${download_prefix}${pathway[0]}
+        wget -O ${pathway[1].Name} ${download_prefix}${pathway[1]}
+	gunzip ${pathway[0].Name}
+	gunzip ${pathway[1].Name}
         """
+}
+
+process CreatingIndex {
+        container = "delaugustin/rna-star:2.7.10a"
+	publishDir = "/home/ubuntu/nextflow/"
+
+	input:
+        file file_ref
+        
+        output:
+        file "genome/"
+
+        script:
+        """
+	STAR --runThreadN 14 --runMode genomeGenerate --genomeDir genome/ --genomeFastaFiles ${file_ref}
+	"""
+
 }
 
 process Mapping {
 	container = "delaugustin/rna-star:2.7.10a"
-	
+	publishDir = "/home/ubuntu/nextflow/"
+
 	input:
+	val index
 	file file_ref
 	tuple file(fastq_file1), file(fastq_file2) 
         
@@ -71,14 +91,12 @@ process Mapping {
     
 	script:    
 	"""
-	STAR --runThreadN 24 --runMode genomeGenerate --genomeDir /genome/ --genomeFastaFiles ${file_ref}
-	
 	STAR --outSAMstrandField intronMotif \
 		--outFilterMismatchNmax 4 \
 		--outFilterMultimapNmax 10 \
-		--genomeDir /genome/ \
+		--genomeDir /${ref_path}/ \
 		--readFilesIn ${fastq_file1} ${fastq_file2} \
-		--runThreadN 24 \
+		--runThreadN 14 \
 		--outSAMunmapped None \
 		--outSAMtype BAM SortedByCoordinate \
 		--outStd BAM_SortedByCoordinate \
@@ -87,24 +105,6 @@ process Mapping {
 		> ${fastq_file1.SimpleName}.bam
 	"""
 }
-
-// Create the process for counting
-process Counting {
-
-	container 'delaugustin/subread'
-
-	input:
-	val ready
-
-	output:
-	val true
-
-	"""
-	featureCounts -T 8 -t gene -g gene_id -s 0 -a input.gtf -o output.counts input.bam
-	"""
-}
-
-
 
 workflow {
 
@@ -115,7 +115,9 @@ workflow {
         fastq_files = DownloadFastq(Channel.fromSRA("SRA062359"))
         // ============Pipeline indexation and mapping===========================
         // Run DownloadRef with the channel
-        file_ref = DownloadRef(Channel.from(1)) //1 chromosome for the moment
+        file_ref = DownloadRef(Channel.from(1..22)).collectFile(name: 'ref.fa')
         // Run CreatingIndex process with DownloadRef's output as input
-	Mapping(file_ref, fastq_files)
+	CreatingIndex(file_ref).view()
+	//index = CreatingIndex(file_ref)
+	//Mapping(index, file_ref, fastq_files)
 }
