@@ -12,4 +12,4 @@ ocker pull delaugustin/sra-toolkit:2.11.3
 
 ## running command 
 mkdir nextflow
-nextflow REPROHACK/NEXTFLOW/script.nf -resumes
+nextflow REPROHACK/NEXTFLOW/script.nf -resume
