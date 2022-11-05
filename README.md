@@ -37,7 +37,7 @@ nextflow run script.nf
 
 
 
-# caution 
+# Caution 
 - A good internet connection is required for the recovery of fastq 
 
 - The workflow will inevitably fail if you attempt to create the genome index and mapping on a machine with less than ~30 GB of available RAM.
