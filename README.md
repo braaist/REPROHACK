@@ -19,19 +19,26 @@ Once nexflow is installed, it will automatically retrieve the docker images used
 A machine with at least 32 GB of FREE RAM (to create the index and the mapping on the reference genome). Recommended configuration is 64 GB, by default the mapping process is configured to use 50 GB.
 
 # Executing The Workflow :
-step 1 : Clone the repo to your machine
+1 - Clone the repo to your machine
 
 git clone https://github.com/braaist/REPROHACK.git
 
 cd REPROHACK 
 
-step 2 : activate the virtual environment
+2 - activate the virtual environment
 
 conda activate nextflow
 
-step 3 : Run the wokflow
+3 - Run the wokflow
 
 cd NEXTFLOW
 
 nextflow run script.nf 
+
+
+
+# caution 
+- A good internet connection is required for the recovery of fastq 
+
+- The workflow will inevitably fail if you attempt to create the genome index and mapping on a machine with less than ~30 GB of available RAM.
 
