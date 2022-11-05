@@ -20,13 +20,18 @@ A machine with at least 32 GB of FREE RAM (to create the index and the mapping o
 
 # Executing The Workflow :
 step 1 : Clone the repo to your machine
+
 git clone https://github.com/braaist/REPROHACK.git
+
 cd REPROHACK 
 
 step 2 : activate the virtual environment
+
 conda activate nextflow
 
 step 3 : Run the wokflow
+
 cd NEXTFLOW
+
 nextflow run script.nf 
 
