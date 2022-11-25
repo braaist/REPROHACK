@@ -1,5 +1,10 @@
 FROM ubuntu:22.04
 
+#installation of wget and missing commands
+RUN apt-get update --fix-missing \
+&& apt-get install -y wget \
+&& cd /usr/local/ \
+
 RUN wget https://github.com/alexdobin/STAR/archive/2.7.10b.tar.gz \
 && tar -xzf 2.7.10b.tar.gz \
 && cd STAR-2.7.10b \
