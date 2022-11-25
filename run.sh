@@ -25,7 +25,7 @@ fi
 
 ##download script.nf and nextflow.config
 wget https://raw.githubusercontent.com/braaist/REPROHACK/main/NEXTFLOW/script.nf
-https://raw.githubusercontent.com/braaist/REPROHACK/main/NEXTFLOW/nextflow.config
+wget https://raw.githubusercontent.com/braaist/REPROHACK/main/NEXTFLOW/nextflow.config
 
 ##installing the images
 

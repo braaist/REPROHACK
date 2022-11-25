@@ -68,7 +68,7 @@ process CreatingIndex {
         file file_ref
         
         output:
-        file "genome/"
+        path "genome/"
 
         script:
         """
@@ -82,7 +82,7 @@ process Mapping {
 	publishDir = "/home/ubuntu/nextflow/"
 
 	input:
-	val index
+	path index
 	file file_ref
 	tuple file(fastq_file1), file(fastq_file2) 
         
@@ -94,7 +94,7 @@ process Mapping {
 	STAR --outSAMstrandField intronMotif \
 		--outFilterMismatchNmax 4 \
 		--outFilterMultimapNmax 10 \
-		--genomeDir /${ref_path}/ \
+		--genomeDir ${index} \
 		--readFilesIn ${fastq_file1} ${fastq_file2} \
 		--runThreadN 14 \
 		--outSAMunmapped None \
@@ -117,7 +117,7 @@ workflow {
         // Run DownloadRef with the channel
         file_ref = DownloadRef(Channel.from(1..22)).collectFile(name: 'ref.fa')
         // Run CreatingIndex process with DownloadRef's output as input
-	CreatingIndex(file_ref).view()
-	//index = CreatingIndex(file_ref)
-	//Mapping(index, file_ref, fastq_files)
+	index = CreatingIndex(file_ref)
+	// Channel.fromPath(index).view()
+	Mapping(index, file_ref, fastq_files)
 }
