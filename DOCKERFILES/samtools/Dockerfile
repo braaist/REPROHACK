@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 #installation of wget and missing commands
 RUN apt-get update --fix-missing \
 && apt-get install -y wget \
-&& cd /usr/local/ \
+&& cd /usr/local/
 
 #installation of required packages
 RUN apt-get update 
