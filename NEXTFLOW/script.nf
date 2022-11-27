@@ -1,33 +1,26 @@
 //specify site for Fasta download as separated prefix
 download_prefix = "ftp://ftp.sra.ebi.ac.uk/"
-ref_path = "/genome/"
-
 
 //process for getting gene anotations
 process DownloadGFF {
-
-        publishDir "/home/ubuntu/nextflow"
         executor = "local"
 
-        input:
-
         output:
-        val true
+        path "Homo_sapiens.GRCh38.101.chr.gtf"
 
         script:
         """
         wget -O Homo_sapiens.GRCh38.101.chr.gtf.gz ftp://ftp.ensembl.org/pub/release-101/gtf/homo_sapiens/Homo_sapiens.GRCh38.101.chr.gtf.gz
+        gunzip Homo_sapiens.GRCh38.101.chr.gtf.gz
         """
 }
 
 //process for downloading reference chromosomes
 process DownloadRef {
-
-        publishDir "/home/ubuntu/nextflow"
         executor = "local"
 
         input:
-        tuple val(name)
+        val(name)
 
         output:
         path "chromosome_*.fa"
@@ -41,8 +34,6 @@ process DownloadRef {
 
 // Process for downloading the patient's genomes
 process DownloadFastq {
-
-	publishDir "/home/ubuntu/nextflow"
         executor = "local"
 
         output:
@@ -62,7 +53,6 @@ process DownloadFastq {
 
 process CreatingIndex {
         container = "delaugustin/rna-star:2.7.10a"
-	publishDir = "/home/ubuntu/nextflow/"
 
 	input:
         file file_ref
@@ -72,22 +62,20 @@ process CreatingIndex {
 
         script:
         """
-	STAR --runThreadN 14 --runMode genomeGenerate --genomeDir genome/ --genomeFastaFiles ${file_ref}
+	STAR --runThreadN $task.cpus --runMode genomeGenerate --genomeDir genome/ --genomeFastaFiles ${file_ref}
 	"""
 
 }
 
 process Mapping {
 	container = "delaugustin/rna-star:2.7.10a"
-	publishDir = "/home/ubuntu/nextflow/"
 
 	input:
 	path index
-	file file_ref
 	tuple file(fastq_file1), file(fastq_file2) 
         
 	output:
-	val true
+	path "*bam"
     
 	script:    
 	"""
@@ -96,7 +84,7 @@ process Mapping {
 		--outFilterMultimapNmax 10 \
 		--genomeDir ${index} \
 		--readFilesIn ${fastq_file1} ${fastq_file2} \
-		--runThreadN 14 \
+		--runThreadN $task.cpus \
 		--outSAMunmapped None \
 		--outSAMtype BAM SortedByCoordinate \
 		--outStd BAM_SortedByCoordinate \
@@ -106,18 +94,72 @@ process Mapping {
 	"""
 }
 
-workflow {
+process Bam_files_indexation {
+	container = "delaugustin/samtools:v1.16.1"
+        
+	input:
+	path bam_files
 
-        // ===========Pipeline for getting gene anotation===================
+        output:
+        path "*.bam"
+    
+	script:    
+	"""
+        samtools index ${bam_files}
+	"""
+}
+
+process Counting {
+	container = "delaugustin/subread:2.0.3"
+        
+	input:
+	path anotations
+        path bam_index_output
+
+        output:
+        path "count_tab.tx"
+    
+	script:    
+	"""
+        featureCounts -T $task.cpus -t gene -g gene_id -s 0 -a ${anotations} -o count_tab.tx ${bam_index_output}
+	"""
+}
+
+process Stat_analysis {
+	container = "delaugustin/r_with_desqeq2:4.2.1"
+        
+	input:
+	path count_tab
+
+        output:
+
+
+	script:    
+	"""
+	"""
+}
+
+workflow {
 	//run DownloadGFF
-        DownloadGFF()
-        // ===========Pipeline for downloading the patient's genes=================
+        anotations = DownloadGFF()
+
         fastq_files = DownloadFastq(Channel.fromSRA("SRA062359"))
-        // ============Pipeline indexation and mapping===========================
-        // Run DownloadRef with the channel
+
+        // Getting the human reference chromosome by chromosome ang gather the sequence in a unique file
         file_ref = DownloadRef(Channel.from(1..22)).collectFile(name: 'ref.fa')
-        // Run CreatingIndex process with DownloadRef's output as input
+
+        // Getting the indices for human genome
 	index = CreatingIndex(file_ref)
-	// Channel.fromPath(index).view()
-	Mapping(index, file_ref, fastq_files)
+
+	// Alignment of the paient genes with on the reference génome
+	bam_files = Mapping(index, fastq_files)
+
+        // 
+        bam_index_output = Bam_files_indexation(bam_files)
+
+        // Getting the count table
+        count_tab = Counting(anotations, bam_index_output)
+        
+        // Make the statiscal analysis with the results
+        //results = Stat_analysis(count_tab)
 }
