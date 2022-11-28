@@ -50,7 +50,24 @@ process DownloadFastq {
 	gunzip ${pathway[1].Name}
         """
 }
-
+process fastqc {
+    container = " delaugustin/fastqc"
+    
+    input:
+    file fastq_files
+    
+    output :
+    path "*html" 
+    
+    script :
+    """
+    #!/usr/bin/env bash
+ 
+    fastqc *.fastq 
+    echo "Quality control done "
+    
+    """
+}
 process CreatingIndex {
         container = "delaugustin/rna-star:2.7.10a"
 
@@ -149,6 +166,8 @@ workflow {
 
         // Getting the human reference chromosome by chromosome ang gather the sequence in a unique file
         file_ref = DownloadRef(Channel.from(1..22)).collectFile(name: 'ref.fa')
+        // Quality control 
+        html = fastqc(fastq_files)
 
         // Getting the indices for human genome
 	index = CreatingIndex(file_ref)
