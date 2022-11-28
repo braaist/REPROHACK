@@ -62,7 +62,9 @@ process CreatingIndex {
 
         script:
         """
-	STAR --runThreadN $task.cpus --runMode genomeGenerate --genomeDir genome/ --genomeFastaFiles ${file_ref}
+	mkdir genome
+	chmod +x genome
+	STAR --runThreadN $task.cpus --runMode genomeGenerate --genomeDir genome --genomeFastaFiles ${file_ref}
 	"""
 
 }
