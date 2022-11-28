@@ -51,7 +51,7 @@ process DownloadFastq {
         """
 }
 process fastqc {
-    container = " delaugustin/fastqc"
+    container = " delaugustin/fastqc:0.11.9"
     
     input:
     file fastq_files
