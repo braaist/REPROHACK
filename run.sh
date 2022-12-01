@@ -24,8 +24,13 @@ then
 fi
 
 ##download script.nf and nextflow.config
-wget https://raw.githubusercontent.com/braaist/REPROHACK/main/NEXTFLOW/script.nf
-wget https://raw.githubusercontent.com/braaist/REPROHACK/main/NEXTFLOW/nextflow.config
+
+if test -f script.nf && test -f nextflow.config; then
+    echo "script.nf and nextflow.config exists."
+else
+    wget https://raw.githubusercontent.com/braaist/REPROHACK/main/NEXTFLOW/script.nf
+    wget https://raw.githubusercontent.com/braaist/REPROHACK/main/NEXTFLOW/nextflow.config
+fi
 
 ##installing the images
 
