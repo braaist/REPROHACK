@@ -170,7 +170,7 @@ workflow {
         fastq_files = DownloadFastq(Channel.fromSRA(params.ID_list, apiKey : params.ncbi_api_key))
 
         // Getting the human reference chromosome by chromosome ang gather the sequence in a unique file
-        file_ref = DownloadRef(1..22).collectFile(name: 'ref.fa')
+	file_ref = DownloadRef(Channel.from(1..22)).collectFile(name: 'ref.fa')
         // Quality control 
         html = fastqc(fastq_files)
 
