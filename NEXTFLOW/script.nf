@@ -1,5 +1,7 @@
-//specify site for Fasta download as separated prefix
+//specify site for Fasta download as separated prefix, NCBI key for requests and SRR list
 download_prefix = "ftp://ftp.sra.ebi.ac.uk/"
+params.ncbi_api_key = '5aba0d52e8608f675c9fa96c9bd0a5d7ca09'
+params.ID_list = ["SRR628582", "SRR628583", "SRR628584", "SRR628585", "SRR628586", "SRR628587", "SRR628588", "SRR628589"]
 
 //process for getting gene anotations
 process DownloadGFF {
@@ -70,6 +72,7 @@ process fastqc {
 }
 process CreatingIndex {
         container = "delaugustin/rna-star:2.7.10a"
+	cpus 14
 
 	input:
         file file_ref
@@ -88,6 +91,7 @@ process CreatingIndex {
 
 process Mapping {
 	container = "delaugustin/rna-star:2.7.10a"
+	cpus 14
 
 	input:
 	path index
@@ -130,6 +134,7 @@ process Bam_files_indexation {
 
 process Counting {
 	container = "delaugustin/subread:2.0.3"
+	cpus 8
         
 	input:
 	path anotations
