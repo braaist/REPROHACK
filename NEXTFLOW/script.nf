@@ -53,7 +53,7 @@ process DownloadFastq {
         """
 }
 process fastqc {
-    container = " delaugustin/fastqc:v0.11.9"
+    container = "test_fastqc"
     
     input:
     file fastq_files
@@ -66,7 +66,7 @@ process fastqc {
     #!/usr/bin/env bash
  
     fastqc *.fastq 
-    echo "Quality control done "
+    echo "Quality control done"
     
     """
 }
@@ -92,60 +92,44 @@ process CreatingIndex {
 process Mapping {
 	container = "delaugustin/rna-star:2.7.10a"
 	cpus 14
+	publishDir "/home/ubuntu/REPROHACK/"
 
 	input:
-	path index
-	tuple file(fastq_file1), file(fastq_file2) 
+	tuple file(fastq_file1), file(fastq_file2), path(index) 
         
 	output:
-	path "*bam"
+	path "*.bam"
     
 	script:    
 	"""
 	STAR --outSAMstrandField intronMotif \
-		--outFilterMismatchNmax 4 \
-		--outFilterMultimapNmax 10 \
-		--genomeDir ${index} \
-		--readFilesIn ${fastq_file1} ${fastq_file2} \
-		--runThreadN $task.cpus \
-		--outSAMunmapped None \
-		--outSAMtype BAM SortedByCoordinate \
-		--outStd BAM_SortedByCoordinate \
-		--genomeLoad NoSharedMemory \
-		--limitBAMsortRAM 80000000000 \
-		> ${fastq_file1.SimpleName}.bam
-	"""
-}
-
-process Bam_files_indexation {
-	container = "delaugustin/samtools:v1.16.1"
-        
-	input:
-	path bam_files
-
-        output:
-        path "*.bam"
-    
-	script:    
-	"""
-        samtools index ${bam_files}
+	--outFilterMismatchNmax 4 \
+	--outFilterMultimapNmax 10 \
+	--genomeDir ${index} \
+	--readFilesIn ${fastq_file1} ${fastq_file2} \
+	--runThreadN $task.cpus \
+	--outSAMunmapped None \
+	--outSAMtype BAM SortedByCoordinate \
+	--outStd BAM_SortedByCoordinate \
+	--genomeLoad NoSharedMemory \
+	--limitBAMsortRAM 80000000000 > ${fastq_file1.simpleName}.bam 
 	"""
 }
 
 process Counting {
-	container = "delaugustin/subread:2.0.3"
-	cpus 8
+	container = "subread_test"
+	publishDir "/home/ubuntu/REPROHACK/"
+	cpus 14
         
 	input:
-	path anotations
-        path bam_index_output
+        tuple file(bam_file), file(anotations)
 
         output:
-        path "count_tab.tx"
+        path "*count_tab.txt"
     
 	script:    
 	"""
-        featureCounts -T $task.cpus -t gene -g gene_id -s 0 -a ${anotations} -o count_tab.tx ${bam_index_output}
+        featureCounts -T $task.cpus -p -t gene -g gene_id -s 0 -a ${anotations} -o ${bam_file.simpleName}count_tab.txt ${bam_file}
 	"""
 }
 
@@ -178,13 +162,11 @@ workflow {
 	index = CreatingIndex(file_ref)
 
 	// Alignment of the paient genes with on the reference génome
-	bam_files = Mapping(index, fastq_files)
-
-        // 
-        bam_index_output = Bam_files_indexation(bam_files)
+	bam_files = Mapping(fastq_files.combine(index))
+	bam_files.view()
 
         // Getting the count table
-        count_tab = Counting(anotations, bam_index_output)
+        count_tab = Counting(bam_files.combine(anotations))
         
         // Make the statiscal analysis with the results
         //results = Stat_analysis(count_tab)
