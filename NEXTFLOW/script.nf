@@ -71,6 +71,13 @@ process fastqc {
     """
 }
 process CreatingIndex {
+
+	executor {
+	name = 'local'
+	cpus = $task.cpus
+	memory = '64 GB'
+	}
+	
         container = "delaugustin/rna-star:2.7.10a"
 	cpus 14
 
