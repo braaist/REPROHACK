@@ -53,7 +53,7 @@ process DownloadFastq {
         """
 }
 process fastqc {
-    container = "test_fastqc"
+    container = "delaugustin/fastqc:v0.11.9"
     
     input:
     file fastq_files
@@ -72,11 +72,7 @@ process fastqc {
 }
 process CreatingIndex {
 
-	executor {
-	name = 'local'
-	cpus = $task.cpus
-	memory = '64 GB'
-	}
+	executor = "local"
 	
         container = "delaugustin/rna-star:2.7.10a"
 	cpus 14
