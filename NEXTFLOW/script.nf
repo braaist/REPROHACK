@@ -120,19 +120,20 @@ process Mapping {
 }
 
 process Counting {
-	container = "subread_test"
+	container = "delaugustin/subread:v2.0.3"
 	publishDir "/home/ubuntu/REPROHACK/"
 	cpus 14
         
 	input:
-        tuple file(bam_file), file(anotations)
+        path anotations
+	path bam_files
 
         output:
         path "*count_tab.txt"
     
 	script:    
 	"""
-        featureCounts -T $task.cpus -p -t gene -g gene_id -s 0 -a ${anotations} -o ${bam_file.simpleName}count_tab.txt ${bam_file}
+        featureCounts -T $task.cpus -p -t gene -g gene_id -s 0 -a ${anotations} -o count_tab.txt ${bam_files}
 	"""
 }
 
@@ -165,7 +166,7 @@ workflow {
 	index = CreatingIndex(file_ref)
 
 	// Alignment of the paient genes with on the reference génome
-	bam_files = Mapping(fastq_files.combine(index))
+	bam_files = Mapping(fastq_files.combine(index)).collect()
 	bam_files.view()
 
         // Getting the count table
