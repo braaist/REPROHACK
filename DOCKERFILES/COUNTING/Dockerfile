@@ -20,4 +20,4 @@ RUN apt-get update --fix-missing \
 #supriession du fichier compressé
 && rm subread-2.0.3-Linux-x86_64.tar.gz
 
-ENTRYPOINT ["/usr/local/bin/subread-2.0.3-Linux-x86_64"]
+ENV PATH="${PATH}:/usr/local/bin/subread-2.0.3-Linux-x86_64/bin/"
