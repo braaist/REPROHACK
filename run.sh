@@ -92,6 +92,6 @@ echo -e "${RED}}|                  Step 4/ : Running the pipeline               
 echo -e "${RED}}|                                                                               |${NC}"
 echo -e "${RED}}---------------------------------------------------------------------------------${NC}"
 ## running command 
-nextflow script.nf -resume
 tmux new -s groupe1_hackaton
+nextflow script.nf -resume
 echo -e "${GREEN}successfully done.${NC}\n"
