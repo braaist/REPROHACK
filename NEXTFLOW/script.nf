@@ -149,7 +149,7 @@ process Stat_analysis {
 	"""
    
         #!/usr/bin/env bash
-	Rscript ${PWD}/${script_stats}  ${count_tab}
+	Rscript ${PWD}/${script_stats} ${count_tab}
     
 	"""
 }
