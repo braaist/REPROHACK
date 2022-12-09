@@ -120,7 +120,7 @@ process Mapping {
 }
 
 process Counting {
-	container = "subread_test"
+	container = "delaugustin/subread:2.0.3"
 	publishDir "/home/ubuntu/REPROHACK/"
 	cpus 14
         
