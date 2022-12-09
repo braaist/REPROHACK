@@ -138,7 +138,7 @@ process Counting {
 }
 
 process Stat_analysis {
-	container = "test_stat"
+	container = "delaugustin/r-desqeq2:v4.2"
         publishDir params.outdir
 	input:
         path script_stats
@@ -158,7 +158,7 @@ workflow {
 	//run DownloadGFF
         anotations = DownloadGFF()
 
-        fastq_files = DownloadFastq(Channel.fromSRA(params.ID_list, apiKey : params.ncbi_api_key))
+        fastq_files = DownloadFastq(Channel.from(params.ID_list, apiKey : params.ncbi_api_key))
 
         // Getting the human reference chromosome by chromosome ang gather the sequence in a unique file
 	file_ref = DownloadRef(Channel.from(1..22)).collectFile(name: 'ref.fa')
