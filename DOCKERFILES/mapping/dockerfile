@@ -5,7 +5,11 @@ RUN apt-get update --fix-missing \
 && apt-get install -y wget \
 && cd /usr/local/
 
-RUN wget https://github.com/alexdobin/STAR/archive/2.7.10b.tar.gz \
-&& tar -xzf 2.7.10b.tar.gz \
-&& cd STAR-2.7.10b/source \
+#Installation of dependancies
+RUN apt-get install -y tar wget make gcc libz-dev build-essential autoconf automake gcc perl zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev
+
+#compilation
+RUN wget https://github.com/alexdobin/STAR/archive/2.7.10a.tar.gz \
+&& tar -xzf 2.7.10a.tar.gz \
+&& cd STAR-2.7.10a/source \
 && make STAR
