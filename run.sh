@@ -1,7 +1,16 @@
 #!/bin/bash
 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
 ## groupe 1 Projet hackaton
 ## create working dir
+
+echo -e "${RED}}---------------------------------------------------------------------------------${NC}"
+echo -e "${RED}}|                                                                               |${NC}"
+echo -e "${RED}}|                  Creating working directory                                   |${NC}"
+echo -e "${RED}}|                                                                               |${NC}"
+echo -e "${RED}}---------------------------------------------------------------------------------${NC}"
 mkdir REPROHACK
 cd REPROHACK/
 
@@ -76,14 +85,13 @@ docker pull delaugustin/samtools:v1.16.1
 echo -e "${GREEN}successfully done.${NC}\n"
 
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-NC='\033[0m'
+
 echo -e "${RED}}---------------------------------------------------------------------------------${NC}"
 echo -e "${RED}}|                                                                               |${NC}"
 echo -e "${RED}}|                  Step 4/ : Running the pipeline                               |${NC}"
 echo -e "${RED}}|                                                                               |${NC}"
 echo -e "${RED}}---------------------------------------------------------------------------------${NC}"
 ## running command 
-tmux new -s groupe1_hackaton
 nextflow script.nf -resume
+tmux new -s groupe1_hackaton
+echo -e "${GREEN}successfully done.${NC}\n"
