@@ -2,7 +2,7 @@
 download_prefix = "ftp://ftp.sra.ebi.ac.uk/"
 params.ncbi_api_key = '5aba0d52e8608f675c9fa96c9bd0a5d7ca09'
 params.ID_list = ["SRR628582", "SRR628583", "SRR628584", "SRR628585", "SRR628586", "SRR628587", "SRR628588", "SRR628589"]
-params.outdir = "results"
+params.outdir = "${PWD}/results"
 //process for getting gene anotations
 process DownloadGFF {
         executor = "local"
@@ -54,7 +54,7 @@ process DownloadFastq {
 }
 process fastqc {
     container = "delaugustin/fastqc:v0.11.9"
-    
+    publishDir params.outdir
     input:
     file fastq_files
     
@@ -74,7 +74,7 @@ process CreatingIndex {
 
 	executor = "local"
 	
-    container = "delaugustin/rna-star:2.7.10a"
+        container = "delaugustin/rna-star:2.7.10a"
 	cpus 14
 
 	input:
@@ -121,7 +121,6 @@ process Mapping {
 
 process Counting {
 	container = "delaugustin/subread:2.0.3"
-	publishDir "/home/ubuntu/REPROHACK/"
 	cpus 14
         
 	input:
