@@ -37,7 +37,7 @@ fi
 docker pull delaugustin/rna-star:2.7.10a
 docker pull delaugustin/subread:v2.0.3
 docker pull delaugustin/fastqc:v0.11.9
-docker pull delaugustin/r_with_desqeq2:4.2.1
+docker pull delaugustin/r-desqeq2:v4.2
 docker pull delaugustin/sra-toolkit:2.11.3
 docker pull delaugustin/samtools:v1.16.1
 
