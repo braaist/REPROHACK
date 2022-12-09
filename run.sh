@@ -11,8 +11,8 @@ echo -e "${RED}}|                                                               
 echo -e "${RED}}|                  Creating working directory                                   |${NC}"
 echo -e "${RED}}|                                                                               |${NC}"
 echo -e "${RED}}---------------------------------------------------------------------------------${NC}"
-mkdir REPROHACK
-cd REPROHACK/
+mkdir groupe1_hackaton
+cd groupe1_hackaton/
 echo -e "${GREEN}successfully done.${NC}\n"
 
 echo -e "${RED}}---------------------------------------------------------------------------------${NC}"
