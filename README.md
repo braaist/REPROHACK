@@ -7,38 +7,27 @@ The goal is to reproduce parts of the analysis described in paper https://pubmed
 
 # Dependencies : 
 The pipeline runs on nextflow a domain-specific language created to automate data-analysis pipelines whilst maximising reproducibility. Nextflow enables scientists to focus on their analyses, isolating different parts of the pipeline into processes whose dependencies can be dealt with using containers and virtual environments with technologies such as Docker, Singularity, and Anaconda.
-The recommended way to install nextflow is via conda, using:
-conda env create -f nextflow_conda_env.yml # will create an env called "nextflow"
-conda activate nextflow
-
-Docker should be installed as well:
-sudo apt install docker
-Once nexflow is installed, it will automatically retrieve the docker images used within the pipeline.
 
 # Hardware requirements :
-A machine with at least 32 GB of FREE RAM (to create the index and the mapping on the reference genome). Recommended configuration is 64 GB, by default the mapping process is configured to use 50 GB.
+A machine with at least 32 GB of FREE RAM (to create the index and the mapping on the reference genome) and at least 14 threads. Recommended configuration is 64 GB, by default the mapping process is configured to use 50 GB. Number of threads may be specified in script.nf file. 
 
 # Executing The Workflow :
-1 - Clone the repo to your machine
+1 - Clone the repo to your machine or download the run.sh file manually.
 
 git clone https://github.com/braaist/REPROHACK.git
-
 cd REPROHACK 
 
-2 - activate the virtual environment
+2 - Run the wokflow (in the tmux or nohup)
 
-conda activate nextflow
+bash run.sh
 
-3 - Run the wokflow
-
-cd NEXTFLOW
-
-nextflow run script.nf 
-
-
+3 – Final results may be found in work/ subdirectory of Stats process.
 
 # Caution 
-- A good internet connection is required for the recovery of fastq 
+- A good internet connection is required for the recovery of fastq.
 
 - The workflow will inevitably fail if you attempt to create the genome index and mapping on a machine with less than ~30 GB of available RAM.
+
+- Execution of the workflow on a machine with 14 threads and 64 GB of RAM takes ~6hrs, that's why it's strongly recommended to run run.sh script in tmux or nohup utilities. 
+
 
