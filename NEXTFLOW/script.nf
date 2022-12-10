@@ -46,28 +46,29 @@ process DownloadFastq {
 
         script:
         """
-        wget -O ${pathway[0].Name} ${download_prefix}${pathway[0]}
-        wget -O ${pathway[1].Name} ${download_prefix}${pathway[1]}
+	wget -O ${pathway[0].Name} ${download_prefix}${pathway[0]}
+	wget -O ${pathway[1].Name} ${download_prefix}${pathway[1]}
 	gunzip ${pathway[0].Name}
 	gunzip ${pathway[1].Name}
         """
 }
 process fastqc {
-	container = "delaugustin/fastqc:v0.11.9"
-	publishDir params.outdir
-	input:
-	file fastq_files
-
-	output :
-	path "*html" 
-
-	script :
-	"""
-	#!/usr/bin/env bash
-
-	fastqc *.fastq 
-	echo "Quality control done"
-	"""
+    container = "delaugustin/fastqc:v0.11.9"
+    publishDir params.outdir
+    input:
+    file fastq_files
+    
+    output :
+    path "*html" 
+    
+    script :
+    """
+    #!/usr/bin/env bash
+ 
+    fastqc *.fastq 
+    echo "Quality control done"
+    
+    """
 }
 process CreatingIndex {
 
@@ -94,7 +95,7 @@ process CreatingIndex {
 process Mapping {
 	container = "delaugustin/rna-star:2.7.10a"
 	cpus 14
-	publishDir "/home/ubuntu/REPROHACK/"
+	publishDir params.outdir
 
 	input:
 	tuple file(fastq_file1), file(fastq_file2), path(index) 
@@ -119,14 +120,14 @@ process Mapping {
 }
 
 process Counting {
-	container = "delaugustin/subread:2.0.3"
+	container = "delaugustin/subread:v2.0.3"
 	cpus 14
         
 	input:
         file(bam_files)
         path(anotations)
 
-    output:
+	output:
         path "*count_tab.txt"
     
 	script:    
@@ -138,6 +139,7 @@ process Counting {
 process Stat_analysis {
 	container = "delaugustin/r-desqeq2:v4.2"
         publishDir params.outdir
+
 	input:
         path script_stats
         path count_tab   
@@ -156,7 +158,7 @@ workflow {
 	//run DownloadGFF
         anotations = DownloadGFF()
 
-        fastq_files = DownloadFastq(Channel.from(params.ID_list, apiKey : params.ncbi_api_key))
+        fastq_files = DownloadFastq(Channel.fromSRA(params.ID_list, apiKey : params.ncbi_api_key))
 
         // Getting the human reference chromosome by chromosome ang gather the sequence in a unique file
 	file_ref = DownloadRef(Channel.from(1..22)).collectFile(name: 'ref.fa')
