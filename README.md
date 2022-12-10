@@ -29,7 +29,7 @@ bash run.sh
 
 3 – Final results may be found in work/ subdirectory of Stats process.
 
-# Caution 
+# Caution :exclamation:
 - A good internet connection is required for the recovery of fastq.
 
 - The workflow will inevitably fail if you attempt to create the genome index and mapping on a machine with less than ~30 GB of available RAM.
