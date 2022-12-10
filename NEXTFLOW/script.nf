@@ -53,22 +53,21 @@ process DownloadFastq {
         """
 }
 process fastqc {
-    container = "delaugustin/fastqc:v0.11.9"
-    publishDir params.outdir
-    input:
-    file fastq_files
-    
-    output :
-    path "*html" 
-    
-    script :
-    """
-    #!/usr/bin/env bash
- 
-    fastqc *.fastq 
-    echo "Quality control done"
-    
-    """
+	container = "delaugustin/fastqc:v0.11.9"
+	publishDir params.outdir
+	input:
+	file fastq_files
+
+	output :
+	path "*html" 
+
+	script :
+	"""
+	#!/usr/bin/env bash
+
+	fastqc *.fastq 
+	echo "Quality control done"
+	"""
 }
 process CreatingIndex {
 
