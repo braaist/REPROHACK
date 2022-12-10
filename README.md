@@ -15,6 +15,7 @@ A machine with at least 32 GB of FREE RAM (to create the index and the mapping o
 1 - Clone the repo to your machine or download the run.sh file manually.
 
 git clone https://github.com/braaist/REPROHACK.git
+
 cd REPROHACK 
 
 2 - Run the wokflow (in the tmux or nohup)
