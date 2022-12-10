@@ -14,17 +14,18 @@ A machine with at least 32 GB of FREE RAM (to create the index and the mapping o
 # Executing The Workflow :
 1 - Clone the repo to your machine or download the run.sh file manually.
 
-'''bash
+```bash
 git clone https://github.com/braaist/REPROHACK.git
 
 cd REPROHACK 
-'''
+```
 
 2 - Run the wokflow (in the tmux or nohup)
 
-'''bash
+
+```bash
 bash run.sh
-'''
+```
 
 3 – Final results may be found in work/ subdirectory of Stats process.
 
