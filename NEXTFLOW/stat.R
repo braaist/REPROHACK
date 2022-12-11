@@ -17,7 +17,7 @@ rownames(count_data) <- count_data[,1]
 count_data <- count_data[,-1]
 
 ##Construction des metadata
-col2<-c("MUT","MUT","MUT","WT","WT","WT","WT","wt")
+col2<-c("MUT","MUT","MUT","WT","WT","WT","WT","WT")
 metadata<-data.frame(row.names = colnames(count_data) ,col2)
 condition<-factor((metadata$col2))
 
