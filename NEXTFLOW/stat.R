@@ -17,7 +17,21 @@ rownames(count_data) <- count_data[,1]
 count_data <- count_data[,-1]
 
 ##Construction des metadata
-col2<-c("MUT","MUT","MUT","WT","WT","WT","WT","WT")
+my_range <- 1:8
+
+#Notre pipeline ne renvoie pas forcément les génomes dans le bon ordre.
+#Afin que nos données soit bien etiqueté nous utilisons la boucle for
+col2<-c("MUT","MUT","MUT","WT","WT","WT","WT","MUT")
+for(i in my_range) {
+  if (colnames(count_data)[i] == "SRR628582_1.bam" 
+      || colnames(count_data)[i] == "SRR628583_1.bam" 
+      || colnames(count_data)[i] == "SRR628584_1.bam"){
+    col2[i] = "MUT"
+  }
+  else{
+    col2[i] = "WT"
+  }}
+
 metadata<-data.frame(row.names = colnames(count_data) ,col2)
 condition<-factor((metadata$col2))
 
